@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using WebAppProject.Services
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
+@inject IHttpContextAccessor HttpContextAccesor;
+
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+        @if (User.IsInRole("admin"))
+        {
+            <li class="nav-item ">
+                <a class="nav-link text-dark">Hello Admin!</a>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" asp-action="Logout" asp-controller="Account" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                </form>
+            </li>
+        }
+        @if (User.IsInRole("client"))
+        {
+            @if (HttpContextAccesor.HttpContext.Session.GetInt32(CartCount.sessionCount) != null)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-action="Index" asp-controller="Cart">
+                        (@HttpContextAccesor.HttpContext.Session.GetInt32(CartCount.sessionCount)) &nbsp;
+                        <i class="fa-solid fa-bag-shopping fa-lg"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        (0)<i class="fa-solid fa-bag-shopping fa-lg"></i>
+                    </a>
+                </li>
+            }
+
+            <li class="nav-item ">
+                <a class="nav-link text-dark">Hello @User.Identity?.Name!</a>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" asp-action="Logout" asp-controller="Account" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                </form>
+            </li>
+        }
+
+}
+else
+{
+    <li class="nav-item">
+            <a class="nav-link text-dark" asp-action="Register" asp-controller="Account">Register</a>
+    </li>
+    <li class="nav-item">
+            <a class="nav-link text-dark" asp-action="Login" asp-controller="Account">Login</a>
+    </li>
+}
+</ul>
+

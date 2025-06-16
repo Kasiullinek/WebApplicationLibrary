@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserModel> SignInManager
+
+@model WebAppProject.ViewModels.BookVM
+
+@{
+    ViewData["Title"] = "Book Details Page";
+}
+
+<div class="PaddingAll">
+    <!-- Nagłówek strony -->
+    <h2 class="text-info">Details</h2>
+    <hr class="font-weight-bold" />
+    <div class="PaddingAllWhite">
+        <div class="row">
+            <div class="col-5">
+                <!-- Wyświetlanie obrazu książki -->
+                <img src="~/img/@Model.Books.ImgUrl" class="w-100" />
+            </div>
+            <div class="col-5 offset-1">
+                <!-- Wyświetlanie danych książki -->
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(Model => Model.Books.Title)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.Title)
+                    </dd>
+                    <dt class="col-sm-3">
+                        <label>Author</label>
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.author.Name)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(Model => Model.Books.Description)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.Description)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(Model => Model.Books.PublishDate)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.PublishDate)
+                    </dd>
+                    <dt class="col-sm-3">
+                        <label>Publisher</label>
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.publisher.Name)
+                    </dd>
+                    <dt class="col-sm-3">
+                        <label>Genre</label>
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.genre.Name)
+                    </dd>
+                    <dt class="col-sm-3">
+                        <label>Language</label>
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.language.Name)
+                    </dd>
+                    <dt class="col-sm-3">
+                        <label>Category</label>
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.category.Name)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(Model => Model.Books.ISBN)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(Model => Model.Books.ISBN)
+                    </dd>
+                </dl>
+                <div class="row form-group">
+                    <div class="col-4">
+                        <!-- Przycisk powrotu do strony głównej -->
+                        <a asp-action="Index" class="btn btn-primary form-control"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+                    </div>
+                    <div class="col-2">
+                        <!-- Przycisk dodania do koszyka (widoczny tylko dla zalogowanych użytkowników) -->
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @if(User.IsInRole("client")){
+                                <form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Books.ID" method="post">
+                                    <input type="hidden" name="bookID" value="@Model.Books.ID" />
+                                    <button type="submit" class="btn btn-success form-control"> <i class="fa-solid fa-plus"></i> </button>
+                                </form>
+                            }  
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

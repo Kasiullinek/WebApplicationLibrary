@@ -1,0 +1,139 @@
+﻿@model WebAppProject.ViewModels.BookVM
+
+@{
+    ViewData["Title"] = "Edit Book Page";
+}
+
+<div class="PaddingAll">
+    <!-- Nagłówek strony edycji książki -->
+    <h2 class="text-info">Edit Book</h2>
+    <hr class="font-weight-bold" />
+    <div class="PaddingAllWhite">
+        <div class="row">
+            <div class="col-19">
+                <!-- Formularz edycji książki -->
+                <form asp-action="Edit" enctype="multipart/form-data" method="post">
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <input asp-for="Books.ID" hidden />
+                    <div class="row form-group p-2">
+                        <div class="col-3">
+                            <label asp-for="Books.Title"></label>
+                        </div>
+                        <div class="col-9">
+                            <input asp-for="Books.Title" class="form-control" />
+                            <span asp-validation-for="Books.Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label>Author</label>
+                        </div>
+                        <div class="col-9 form-group">
+                            @Html.DropDownListFor(m => m.Books.AuthorID, Model.AuthorsList, new { @class = "form-control" })
+                            <span asp-validation-for="Books.AuthorID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label asp-for="Books.Description"></label>
+                        </div>
+                        <div class="col-9">
+                            <input asp-for="Books.Description" class="form-control" />
+                            <span asp-validation-for="Books.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label asp-for="Books.PublishDate"></label>
+                        </div>
+                        <div class="col-9">
+                            <input asp-for="Books.PublishDate" class="form-control" />
+                            <span asp-validation-for="Books.PublishDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label>Publisher</label>
+                        </div>
+                        <div class="col-9 form-group">
+                            @Html.DropDownListFor(m => m.Books.PublisherID, Model.PublishersList, new { @class = "form-control" })
+                            <span asp-validation-for="Books.PublisherID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label>Genres</label>
+                        </div>
+                        <div class="col-9 form-group">
+                            @Html.DropDownListFor(m => m.Books.GenreID, Model.GenresList, new { @class = "form-control" })
+                            <span asp-validation-for="Books.GenreID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label>Language</label>
+                        </div>
+                        <div class="col-9 form-group">
+                            @Html.DropDownListFor(m => m.Books.LanguageID, Model.LanguagesList, new { @class = "form-control" })
+                            <span asp-validation-for="Books.LanguageID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group pb-2">
+                        <div class="col-3">
+                            <label>Category</label>
+                        </div>
+                        <div class="col-9 form-group">
+                            @Html.DropDownListFor(m => m.Books.CategoryID, Model.CategoriesList, new { @class = "form-control" })
+                            <span asp-validation-for="Books.CategoryID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group p-2">
+                        <div class="col-3">
+                            <label asp-for="Books.ISBN"></label>
+                        </div>
+                        <div class="col-9">
+                            <input asp-for="Books.ISBN" class="form-control" />
+                            <span asp-validation-for="Books.ISBN" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row form-group p-2">
+                        <div class="col-12">
+                            <input type="file" asp-for="ImageFile" class="form-control" single></input>
+                        </div>
+                    </div>
+
+                    @if (Model.Books.ImgUrl != "")
+                    {
+                        <div class="row p-2">
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <div class="card">
+                                    <a asp-action="Details" class="card-img-top">
+                                        <img src="~/img/@Model.Books.ImgUrl" class=rounded img-fluid card-img-top rounded with="150" height="100" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br />
+                    <div class="row form-group">
+                        <div class="col-4 offset-1">
+                            <!-- Przycisk anulowania edycji -->
+                            <a asp-action="Index" class="btn btn-primary form-control">Cancel</a>
+                        </div>
+                        <div class="col-6 offset-1">
+                            <!-- Przycisk zatwierdzenia edycji -->
+                            <button type="submit" class="btn btn-success form-control">Edit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

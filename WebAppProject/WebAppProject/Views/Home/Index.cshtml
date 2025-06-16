@@ -1,0 +1,152 @@
+﻿@model WebAppProject.ViewModels.HomeVM
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http;
+@using WebAppProject.Services
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Wyświetlanie komunikatu ostrzegawczego, jeśli istnieje -->
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<!-- Wyświetlanie komunikatu sukcesu, jeśli istnieje -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<!-- Wyświetlanie komunikatu błędu/ niepowodzenia, jeśli istnieje -->
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<!-- Powitanie użytkownika -->
+<div class="text-center">
+    <h1 class="display-4">Welcome!</h1>
+</div>
+
+<!-- Formularz wyszukiwania -->
+<div class="search-container">
+    <form asp-action="Index" method="get" class="search-title-form my-4">
+        <div class="input-group">
+            <input type="text" name="searchTitle" class="form-control" placeholder="Search by title..."
+                   value="@ViewData["searchTitle"]" />
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+</div>
+
+<!-- Kontener na książki -->
+<div class="books-container">
+    <div class="row">
+        @if (Model.BookList.Count() > 0)
+        {
+            <!-- Iteracja przez listę książek i wyświetlanie okładki z tytułem i autorem -->
+            @foreach (var book in Model.BookList)
+            {
+                <div class="col-3">
+                    <div class="card my-2 book-card">
+                        <a asp-action="Details" asp-controller="Home" asp-route-id="@book.ID" class="a-cleanup">
+                            <img src="~/img/@book.ImgUrl" class="card-img-top card-img-custom" />
+                            <div class="card-body" style="height: 3em;">
+                                <h5 class="mb-3">"@book.Title"</h5>
+                            </div>
+                            <div class="card-body">
+                                @if (book.author != null)
+                                {
+                                    <h5 class="mb-3">by @book.author.Name</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="mb-3">by Unknown Author</h5>
+                                }
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Paginacja ze skracaniem-->
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-controller="Home" asp-route-pageNumber="@(Model.CurrentPage - 1)" asp-route-searchTitle="@ViewData["searchTitle"]" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+
+            @if (Model.CurrentPage > 3)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-controller="Home" asp-route-pageNumber="1" asp-route-searchTitle="@ViewData["searchTitle"]">1</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = (int)Model.CurrentPage - 2; i <= Model.CurrentPage + 2; i++)
+            {
+                if (i > 0 && i <= Model.TotalPages)
+                {
+                    <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-controller="Home" asp-route-pageNumber="@i" asp-route-searchTitle="@ViewData["searchTitle"]">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-controller="Home" asp-route-pageNumber="@(Model.TotalPages)" asp-route-searchTitle="@ViewData["searchTitle"]">@Model.TotalPages</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-controller="Home" asp-route-pageNumber="@(Model.CurrentPage + 1)" asp-route-searchTitle="@ViewData["searchTitle"]" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

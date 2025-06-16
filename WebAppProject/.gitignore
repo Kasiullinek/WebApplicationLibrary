@@ -1,0 +1,47 @@
+## Plik .gitignore dla aplikacji ASP.NET MVC w Visual Studio 2022
+
+# Pliki systemowe
+*.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Pliki Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.VC.db
+
+# Pliki kompilacji
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.log
+
+# Pliki publikacji
+*.Publish.xml
+publish/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Rider / Resharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.DotSettings.user
+
+# Font Awesome (jeśli skopiowane ręcznie lub z package managera)
+*/wwwroot/lib/fontawesome*/
+
+

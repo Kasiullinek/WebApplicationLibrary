@@ -1,0 +1,43 @@
+﻿@model GenreModel
+
+@{
+    ViewData["Title"] = "Delete Genre Page";
+}
+
+<div class="PaddingAll">
+    <div class="row">
+        <div class="col-lg-8 col-md-6 col-sm-12">
+            <!-- Nagłówek strony -->
+            <h1 class="text-danger">Delete Iteam</h1>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3">
+            <!-- Przycisk powrotu do listy gatunków -->
+            <a asp-action="Index" class="btn btn-primary form-control">Close</a>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3">
+            <!-- Formularz potwierdzenia usunięcia elementu -->
+            <form asp-action="Delete" method="post">
+                <button type="submit" asp-route-id="@Model.ID" class="btn btn-danger form-control">Confirm</button>
+            </form>
+        </div>
+    </div>
+    </hr>
+    <div class="PaddingAllWhite">
+        <div class="row">
+            <div class="col-4 text-warning">
+                <!-- Pytanie o potwierdzenie usunięcia elementu -->
+                <h4>Do you want to delete: </h4>
+            </div>
+            <div class="col-8 text-info">
+                <!-- Nazwa elementu do usunięcia -->
+                <h4 class="text-info">'@Model.Name' ?</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

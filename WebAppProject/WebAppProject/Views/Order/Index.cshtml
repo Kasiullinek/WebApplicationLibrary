@@ -1,0 +1,105 @@
+﻿@model WebAppProject.ViewModels.OrderVM
+@{
+    ViewData["Title"] = "Order Page";
+}
+
+<!-- Sprawdzenie, czy są jakieś elementy zamówienia -->
+@if (Model.OrderItems.Count() > 0)
+{
+    <div class="PaddingAll">
+        <!-- Nagłówek strony -->
+        <h2 class="text-info">Order Details</h2>
+        <hr class="font-weight-bold" />
+        <div class="PaddingAllWhite">
+            <!-- Iteracja przez elementy zamówienia i wyświetlenie danych zamówienia-->
+            @foreach (var item in Model.OrderItems)
+            {
+                <div class="row mb-3">
+                    <div class="col-3">
+                        <img src="~/img/@item.book.ImgUrl" class="card-img-top card-img-custom" />
+                    </div>
+                    <div class="col-9">
+                        <dl class="row">
+                            <dt class="col-sm-3">
+                                <label>Title</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.Title)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Author</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.author.Name)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Description</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.Description)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Publication Date</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.PublishDate)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Publisher</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.publisher.Name)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Genre</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.genre.Name)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Language</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.language.Name)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>Category</label>
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(modelItem => item.book.category.Name)
+                            </dd>
+                            <dt class="col-sm-3">
+                                <label>ISBN</label>
+                            </dt>
+                            <dd class="col-sm-6">
+                                @Html.DisplayFor(modelItem => item.book.ISBN)
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <hr />
+            }
+            <div class="row form-group">
+                <div class="col-3">
+                    <!-- Przycisk powrotu do koszyka -->
+                    <a asp-action="Index" asp-controller="Cart" class="btn btn-primary form-control"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+                </div>
+                <div class="col-3">
+                    <!-- Przycisk do potwierdzenia zamówienia -->
+                    <a asp-action="SubmitOrder" asp-controller="Order" class="btn btn-success">Confirm Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h2 class="text-muted">You have not placed any orders!</h2>
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

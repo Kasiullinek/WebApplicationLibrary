@@ -1,0 +1,284 @@
+﻿@model WebAppProject.ViewModels.ReportVM
+
+@{
+    ViewData["Title"] = "Report Page";
+}
+
+<!-- Filtr -->
+<div class="PaddingAll">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <h2 class="mr-2">Filters</h2>
+        </div>
+        <div class="col-auto">
+            <button id="toggleFilters" class="btn btn-secondary">+</button>
+        </div>
+    </div>
+    <form method="get" action="/Report/Index">
+        <div id="filtersSection" class="filter-section-box">
+            <div class="row">
+                <!-- User Name Filter --> 
+                <div class="col-md-6 mb-3">
+                    <h4>User</h4> 
+                    <div class="form-group"> 
+                        <label for="SearchUserName">User Name</label> 
+                        <input type="text" id="SearchUserName" name="SearchUserName" class="form-control" placeholder="name@example.com" value="@Model.SearchUserName" />
+                    </div> 
+                </div>
+                <!-- Date Filter --> 
+                <div class="col-md-6 mb-3"> 
+                    <h4>Date Range</h4> 
+                    <div class="form-group"> 
+                        <label for="StartDate">Start Date</label> 
+                        <input type="date" id="StartDate" name="StartDate" class="form-control" value="@Model.StartDate" />
+                    </div> 
+                    <div class="form-group"> 
+                        <label for="EndDate">End Date</label> 
+                        <input type="date" id="EndDate" name="EndDate" class="form-control" value="@Model.EndDate"/>
+                        <small id="dateError" class="text-danger" style="display: none;">End Date must be greater than or equal to Start Date.</small>
+                    </div> 
+                </div>
+                <!-- Genres Filter -->
+                <div class="col-md-3 mb-5">
+                    <h4>Genres</h4>
+                    <div>
+                        <input type="checkbox" id="selectAllGenres" checked/>
+                        <label for="selectAllGenres"><strong>All</strong></label>
+                    </div>
+                    @foreach (var genre in Model.GenresList)
+                    {
+                        <div>
+                            <input type="checkbox" id="genre_@genre.ID" name="SelectedGenres" value="@genre.ID" class="genre-checkbox" checked />
+                            <label for="genre_@genre.ID">@genre.Name</label>
+                        </div>
+                    }
+                </div>
+                <!-- Categories Filter -->
+                <div class="col-md-3 mb-5">
+                    <h4>Categories</h4>
+                    <div>
+                        <input type="checkbox" id="selectAllCategories" checked />
+                        <label for="selectAllCategories"><strong>All</strong></label>
+                    </div>
+                    @foreach (var category in Model.CategoriesList)
+                    {
+                        <div>
+                            <input type="checkbox" id="category_@category.ID" name="SelectedCategories" value="@category.ID" class="category-checkbox" checked />
+                            <label for="category_@category.ID">@category.Name</label>
+                        </div>
+                    }
+                </div>
+                <!-- Authors Filter -->
+                <div class="col-md-3 mb-5">
+                    <h4>Authors</h4>
+                    <div>
+                        <input type="checkbox" id="selectAllAuthors" checked />
+                        <label for="selectAllAuthors"><strong>All</strong></label>
+                    </div>
+                    @foreach (var author in Model.AuthorsList)
+                    {
+                        <div>
+                            <input type="checkbox" id="author_@author.ID" name="SelectedAuthors" value="@author.ID" class="author-checkbox" checked />
+                            <label for="author_@author.ID">@author.Name</label>
+                        </div>
+                    }
+                </div>
+                <!-- Publishers Filter -->
+                <div class="col-md-3 mb-5">
+                    <h4>Publishers</h4>
+                    <div>
+                        <input type="checkbox" id="selectAllPublishers" checked />
+                        <label for="selectAllPublishers"><strong>All</strong></label>
+                    </div>
+                    @foreach (var publisher in Model.PublishersList)
+                    {
+                        <div>
+                            <input type="checkbox" id="publisher_@publisher.ID" name="SelectedPublishers" value="@publisher.ID" class="publisher-checkbox" checked />
+                            <label for="publisher_@publisher.ID">@publisher.Name</label>
+                        </div>
+                    }
+                </div>
+                <!-- Languages Filter -->
+                <div class="col-md-3 mb-5">
+                    <h4>Languages</h4>
+                    <div>
+                        <input type="checkbox" id="selectAllLanguages" checked />
+                        <label for="selectAllLanguages"><strong>All</strong></label>
+                    </div>
+                    @foreach (var language in Model.LanguagesList)
+                    {
+                        <div>
+                            <input type="checkbox" id="language_@language.ID" name="SelectedLanguages" value="@language.ID" class="language-checkbox" checked />
+                            <label for="language_@language.ID">@language.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <button id="applyFiltersButton" type="submit" class="btn btn-primary mt-2">Apply Filters</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- Lista zamówień -->
+<div class="PaddingAll">
+    <div class="row m-3">
+        <div class="col-lg-7 col-md-5 col-sm-12">
+            <h2 class="text-primary">List of Orders</h2>
+            <hr />
+        </div>
+    </div>
+    <div class="PaddingAllWhite">
+        @if (Model.OrderList != null && Model.OrderList.Count() > 0)
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tr class="bg-secondary text-white">
+                        <th>Order Date</th>
+                        <th>Users</th>
+                        <th>Books</th>
+                    </tr>
+                    @foreach (var order in Model.OrderList)
+                    {
+                        <tr>
+                            <td>
+                                <div> @order.OrderDate.Value.ToString("dd-MM-yyyy")</div>
+                                <div> @order.OrderDate.Value.ToString("HH:mm")</div>
+                            </td>
+
+                            <td>
+                                <div><strong>First Name:</strong> @order.user.FirstName</div>
+                                <div><strong>Last Name:</strong> @order.user.LastName</div>
+                                <div><strong>Email:</strong> @order.user.Email</div>
+                                <div><strong>Phone:</strong> @order.user.PhoneNumber</div>
+                                <div><strong>PESEL:</strong> @order.user.PESEL</div>
+                            </td>
+
+                            <td>
+                                <div><strong>Title:</strong> @order.book.Title</div>
+                                <div><strong>Author:</strong> @order.book.author.Name</div>
+                                <div><strong>Genre:</strong> @order.book.genre.Name</div>
+                                <div><strong>Publisher:</strong> @order.book.publisher.Name</div>
+                                <div><strong>Category:</strong> @order.book.category.Name</div>
+                                <div><strong>Language:</strong> @order.book.language.Name</div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        else
+        {
+            <h3 class="text-info">No Orders available.</h3>
+        }
+    </div>
+</div>
+
+<!-- Paginacja ze skracaniem-->
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@(Model.CurrentPage - 1)"
+                       asp-route-SelectedCategories="@string.Join(",", Model.SelectedCategories?.Any() == true ? Model.SelectedCategories : new List<int>())"
+                       asp-route-SelectedGenres="@string.Join(",", Model.SelectedGenres?.Any() == true ? Model.SelectedGenres : new List<int>())"
+                       asp-route-SelectedLanguages="@string.Join(",", Model.SelectedLanguages?.Any() == true ? Model.SelectedLanguages : new List<int>())"
+                       asp-route-SelectedAuthors="@string.Join(",", Model.SelectedAuthors?.Any() == true ? Model.SelectedAuthors : new List<int>())"
+                       asp-route-SelectedPublishers="@string.Join(",", Model.SelectedPublishers?.Any() == true ? Model.SelectedPublishers : new List<int>())"
+                       asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                       asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+                       asp-route-SearchUserName="@Model.SearchUserName" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+
+            @if (Model.CurrentPage > 3)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="1"
+                       asp-route-SelectedCategories="@string.Join(",", Model.SelectedCategories?.Any() == true ? Model.SelectedCategories : new List<int>())"
+                       asp-route-SelectedGenres="@string.Join(",", Model.SelectedGenres?.Any() == true ? Model.SelectedGenres : new List<int>())"
+                       asp-route-SelectedLanguages="@string.Join(",", Model.SelectedLanguages?.Any() == true ? Model.SelectedLanguages : new List<int>())"
+                       asp-route-SelectedAuthors="@string.Join(",", Model.SelectedAuthors?.Any() == true ? Model.SelectedAuthors : new List<int>())"
+                       asp-route-SelectedPublishers="@string.Join(",", Model.SelectedPublishers?.Any() == true ? Model.SelectedPublishers : new List<int>())"
+                       asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                       asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+                       asp-route-SearchUserName="@Model.SearchUserName">1</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = (int)Model.CurrentPage - 2; i <= Model.CurrentPage + 2; i++)
+            {
+                if (i > 0 && i <= Model.TotalPages)
+                {
+                    <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-SelectedCategories="@string.Join(",", Model.SelectedCategories?.Any() == true ? Model.SelectedCategories : new List<int>())"
+                           asp-route-SelectedGenres="@string.Join(",", Model.SelectedGenres?.Any() == true ? Model.SelectedGenres : new List<int>())"
+                           asp-route-SelectedLanguages="@string.Join(",", Model.SelectedLanguages?.Any() == true ? Model.SelectedLanguages : new List<int>())"
+                           asp-route-SelectedAuthors="@string.Join(",", Model.SelectedAuthors?.Any() == true ? Model.SelectedAuthors : new List<int>())"
+                           asp-route-SelectedPublishers="@string.Join(",", Model.SelectedPublishers?.Any() == true ? Model.SelectedPublishers : new List<int>())"
+                           asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                           asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+                           asp-route-SearchUserName="@Model.SearchUserName">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@(Model.TotalPages)"
+                       asp-route-SelectedCategories="@string.Join(",", Model.SelectedCategories?.Any() == true ? Model.SelectedCategories : new List<int>())"
+                       asp-route-SelectedGenres="@string.Join(",", Model.SelectedGenres?.Any() == true ? Model.SelectedGenres : new List<int>())"
+                       asp-route-SelectedLanguages="@string.Join(",", Model.SelectedLanguages?.Any() == true ? Model.SelectedLanguages : new List<int>())"
+                       asp-route-SelectedAuthors="@string.Join(",", Model.SelectedAuthors?.Any() == true ? Model.SelectedAuthors : new List<int>())"
+                       asp-route-SelectedPublishers="@string.Join(",", Model.SelectedPublishers?.Any() == true ? Model.SelectedPublishers : new List<int>())"
+                       asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                       asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+                       asp-route-SearchUserName="@Model.SearchUserName">@Model.TotalPages</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@(Model.CurrentPage + 1)"
+                       asp-route-SelectedCategories="@string.Join(",", Model.SelectedCategories?.Any() == true ? Model.SelectedCategories : new List<int>())"
+                       asp-route-SelectedGenres="@string.Join(",", Model.SelectedGenres?.Any() == true ? Model.SelectedGenres : new List<int>())"
+                       asp-route-SelectedLanguages="@string.Join(",", Model.SelectedLanguages?.Any() == true ? Model.SelectedLanguages : new List<int>())"
+                       asp-route-SelectedAuthors="@string.Join(",", Model.SelectedAuthors?.Any() == true ? Model.SelectedAuthors : new List<int>())"
+                       asp-route-SelectedPublishers="@string.Join(",", Model.SelectedPublishers?.Any() == true ? Model.SelectedPublishers : new List<int>())"
+                       asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                       asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+                       asp-route-SearchUserName="@Model.SearchUserName" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

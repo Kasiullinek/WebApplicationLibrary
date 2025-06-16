@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    if (User.IsInRole("admin"))
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link drop-down-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="">Manage</a>
+            <ul class="dropdown-menu">
+                <li class="nav-item border-bottom">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
+                </li>
+                <li class="nav-item border-left">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Genre" asp-action="Index">Genres</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Language" asp-action="Index">Languages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Publisher" asp-action="Index">Publishers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Author" asp-action="Index">Authors</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Report" asp-action="Index">Reports</a>
+        </li>
+    }
+}
+
+

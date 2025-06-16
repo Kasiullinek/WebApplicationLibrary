@@ -1,0 +1,232 @@
+﻿@model IEnumerable<BookModel>
+
+@{
+    ViewData["Title"] = "Book Managment Home Page";
+}
+
+<!-- Wyświetlanie komunikatu ostrzegawczego, jeśli istnieje -->
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+        @TempData["AlertMessage"]
+    </div>
+}
+
+<!-- Filtr -->
+<div class="PaddingAll">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <h2 class="mr-2">Filters</h2>
+        </div>
+        <div class="col-auto">
+            <button id="toggleFilters" class="btn btn-secondary">+</button>
+        </div>
+    </div>
+    <!-- Formularz wyszukiwania książek --> 
+    <form method="get" asp-action="Index">
+        <div id="filtersSection" class="filter-section-box">
+            <div class="row mb-3">
+                <div class="col-md-5">
+                    <input type="text" name="searchTitle" class="form-control" placeholder="Search by Title" value="@ViewBag.SearchTitle" />
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="searchISBN" class="form-control" placeholder="Search by ISBN" value="@ViewBag.SearchISBN" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="PaddingAll">
+    <div class="row m-3">
+        <div class="col-lg-7 col-md-5 col-sm-12">
+            <!-- Nagłówek strony z listą książek -->
+            <h2 class="text-primary">Books List</h2>
+            <hr />
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-12">
+            <!-- Przycisk do dodawania nowej książki -->
+            <a asp-action="Add" asp-controller="Book" class="btn btn-primary form-control">Add New Book</a>
+        </div>
+    </div>
+    <div class="PaddingAllWhite">
+        @if (Model.Count() > 0)
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tr class="bg-secondary text-white">
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>
+                            <div class="">
+                                Author
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Description
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Publication Date
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Publisher
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Genre
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Language
+                            </div>
+                        </th>
+                        <th>
+                            <div class="">
+                                Category
+                            </div>
+                        </th>
+                        <th>ISBN</th>
+                        <th>Image</th>
+                        <th></th>
+                    </tr>
+                    <!-- Iteracja przez listę książek i wyświetlanie ich danych -->
+                    @foreach (var book in Model)
+                    {
+                        <tr>
+                            <td>@book.ID</td>
+                            <td>@book.Title</td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.author.Name)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.Description)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.PublishDate.ToString("yyyy-MM-dd"))
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.publisher.Name)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.genre.Name)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.language.Name)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="border-0">
+                                    @Html.Raw(book.category.Name)
+                                </div>
+                            </td>
+                            <td>@book.ISBN</td>
+                            @if (book.ImgUrl != "")
+                            {
+                                <td><img src="~/img/@book.ImgUrl" class="rounded img-fluid" with="150" height="100" /></td>
+                            }
+                            else
+                            {
+                                <td><img src="~/img/noimage.png" class="rounded img-fluid" width="150" height="100" /></td>
+                            }
+                            <td>
+                                <!-- Przycisk do edycji i usunięcia książki -->
+                                <a asp-action="Edit" asp-controller="Book" asp-route-id="@book.ID" class="btn btn-primary mb-1 form-control">Edit</a>
+                                <a asp-action="Delete" asp-controller="Book" asp-route-id="@book.ID" class="btn btn-danger form-control">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        else
+        {
+            <h3 class="text-info">No books available. Add a new book to get started.</h3>
+        }
+    </div>
+</div>
+
+<!-- Paginacja ze skracaniem-->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(ViewBag.CurrentPage - 1)" asp-route-searchTitle="@ViewBag.SearchTitle" asp-route-searchISBN="@ViewBag.SearchISBN" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage > 3)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="1" asp-route-searchTitle="@ViewBag.SearchTitle" asp-route-searchISBN="@ViewBag.SearchISBN">1</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            }
+
+            @for (int i = ViewBag.CurrentPage - 2; i <= ViewBag.CurrentPage + 2; i++)
+            {
+                if (i > 0 && i <= ViewBag.TotalPages)
+                {
+                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-searchTitle="@ViewBag.SearchTitle" asp-route-searchISBN="@ViewBag.SearchISBN">@i</a>
+                    </li>
+                }
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages - 2)
+            {
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(ViewBag.TotalPages)" asp-route-searchTitle="@ViewBag.SearchTitle" asp-route-searchISBN="@ViewBag.SearchISBN">@ViewBag.TotalPages</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(ViewBag.CurrentPage + 1)" asp-route-searchTitle="@ViewBag.SearchTitle" asp-route-searchISBN="@ViewBag.SearchISBN" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
